@@ -1,0 +1,636 @@
+---
+title: "R & Probabilities Intro"
+author: ''
+date: ''
+output:
+  html_notebook:
+    code_folding: none
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: paged
+    theme: sandstone
+    highlight: kate
+  html_document:
+    toc: true
+    df_print: paged
+  pdf_document:
+    toc: true
+---
+<style>
+.exercise{background-color:#c9e2a5;padding:1ex 1ex .1ex 1ex;}
+.answer{background-color:#f3f3a5;padding:1ex 1ex .1ex 1ex;}
+</style>
+::: exercise :::
+[This is how exercises are highlighted]
+:::
+::: answer  :::
+[This is how your answers are highlighted]
+:::
+
+
+
+
+# Introduction
+
+Basic R concepts (variables, functions, indexing, ...)
+are introduced along the way and as needed.
+This notebook aims to give you a feel for the vast R possibilities,
+and to introduce you to an iterative try-and-debug work mode
+that equips you with the intuition and tools necessary to learn more
+as you progress and become a more proficient R programmer (or R user).
+
+::: exercise :::
+Download the `.Rmd` file
+by clicking `Code > Download Rmd` in the top-right corner.
+Open the file in RStudio, locate this very line in the file,
+and continue from there.
+:::
+
+
+
+# R & RStudio basics
+
+Code is executed using the green triangular run button
+at the top right of code chunks,
+using `Ctrl+Enter` or `Cmd+Enter`
+for running the individual line your cursor is currently on,
+or using `Ctrl+Shift+Enter` or `Cmd+Shift+Enter` to run individual code chunks.
+
+::: exercise :::
+
+Execute the code below and have R compute the mean of two variables `a` and `b` for you:
+:::
+``` {r}
+a <- 13; b <- 42
+a_and_b_combined <- c(a,b)
+mean(a_and_b_combined)
+```
+
+Upon successful completion of the above code chunk,
+R should output the arithmetic mean $\frac{13 + 42}{2}$ of $13$ and $42$.
+
+
+
+__A note on coding style__:
+Readability of code goes a long way.
+For starters,
+and instead of reading the [tidyverse style guide](https://style.tidyverse.org/)
+and learning it off by heart,
+some general advice is:
+use consistent syntax,
+prefer short over long code lines,
+and have at most one statement per line.
+While learning R, 
+it is a good idea to select code blocks you have written
+and to hit `Ctrl+Shift+A`
+– this will reformat your code
+and thus give you feedback on how to write better-structured code.
+You may try this straight away for the code chunk above
+– you will notice that RStudio's reformatter splits the statements over lines
+and inserts a space after the comma.
+
+
+
+__Help: `?` is generally a good idea__
+
+R packages and functions are usually well documented.
+While the exhaustive documentation may be overwhelming in the beginning, it is invaluable to be able to extract relevant information from documentation (and the internet more generally).
+Even the most well-versed coders may struggle to develop anything while their access to documentation and the internet is capped.
+That is, we will often spend (at least) as much time on reading about some function and its options as we spend on writing actual code lines.
+
+
+# Sampling from finite sets
+
+We can use the function `sample()` to obtain a sample from a finite set. 
+``` {r}
+# sample one value from {1,2,3} with equal probability
+sample(1:3, size = 2)
+```
+
+
+We can also specify the probabilities of the elementary events.
+``` {r}
+sample(c("red", "blue"), size = 1, prob = c(0.25, 0.75))
+```
+
+The vector of probabilities does not need to be normalized.
+``` {r}
+sample(1:10, size = 1, prob = 1:10)
+```
+
+::: exercise :::
+@. Create a function called `rollDie`
+that take as input the number $n$ 
+of faces of a die
+and returns a random natural number between $1$ and $n$, 
+that is ,
+simulate rolling a $n$-sided die. 
+:::
+
+::: answer :::
+```{r}
+rollDie <- function(n) {
+return(sample(n, size = 1))
+}
+```
+:::
+
+## Sampling with replacement
+
+Often we wish to obtain a 
+sample with more than one observation sampled without replacement.
+More precisely,
+we wish to obtain a sequence of $n$ independent random observations from a finite set
+with some specified probabilities.
+To obtain that we have to use `replace = TRUE` as 
+an argument to `sample`.
+
+``` {r}
+sample(c("heads", "tails"), size = 10, replace = TRUE)
+```
+
+::: exercise :::
+@. What happens if we call `sample(c(1:3), size = 10)`, can you explain it?
+@. Implement a function that implements the random experiment of tossing a coin $n$ times, 
+   and returns
+   the total number of heads in the sequence. 
+@. What does the simple function call `sample(4)` do? (Hint: `?sample`)
+:::
+
+::: answer :::
+```{r}
+no_heads <- function(n) {
+coin_flips <- replicate(n, rollDie(2))
+return(sum(coin_flips == 2))
+}
+```
+:::
+
+
+
+
+
+
+
+# Example: Blood types genetics
+
+In classical genetics, we recognize three alleles for the ABO gene that 
+regulates
+ABO blood type: $i$, $I^A$, and $I^B$ . Any individual inherits a complete
+set of chromosomes from its two parents and thus the genotype of an 
+individual is a pair of alleles (the order is not important).
+
+## Sample space
+
+::: exercise :::
+Describe the sample space $\Omega$ related to the genotype of an 
+individual.
+:::
+
+::: answer :::
+
+:::
+
+::: exercise :::
+How can we simulate a random individual genotype? (use the _sample_ function).
+:::
+
+::: answer :::
+```{r}
+randomGenotype <- function(alleles = c("i", "A", "B")) {
+sample(alleles, size = 2, replace = T)
+}
+randomGenotype()
+```
+:::
+
+## Random Variable: Phenotype
+
+We know that even if there are $6$ genotypes (the sample space $\Omega$),
+the possible phenotypes are only the following $4$:
+
+- **Type A** produced by $I^AI^A$ and $I^Ai$
+- **Type B** produced by $I^BI^B$ and $I^Bi$
+- **Type AB** produced by $I^AI^B$
+- **Type 0** produced by $ii$
+
+Observe that the mapping from genotype to phenotype is an example of an "extended" random variable.
+
+::: exercise :::
+Create a function that computes the phenotype from the genotype.
+:::
+
+::: answer :::
+```{r}
+genotype2phenotype <- function(genotype) {
+  if (all(genotype == "i")) {
+  return("Type O")
+  } else if ("i" %in% genotype) {
+  return(paste("Type", genotype[genotype != "i"]))
+  } else if (genotype[1] == genotype[2]) {
+  return(paste("Type", genotype[1]))
+  } else{
+  return("Type AB")
+  }
+}
+genotype2phenotype(c("i", "i"))
+```
+:::
+
+
+## Simulation: Inheritance 
+
+Suppose now that the individuals inherit from each
+parent randomly one of the two alleles.
+That is,
+if the two parents have alleles $\{x_1,x_2\}$
+and $\{y_1,y_2\}$ respectively, then the offspring will
+receive $x_1$ or $x_2$ from the first parent and $y_1$ or
+$y_2$ from the second parent, with probabilities all equal to $0.5$.
+Suppose moreover that the events related to different parents are independent.
+From now on we use the notation $ab = \{a,b\}$
+for genotypes.
+
+::: exercise :::
+Create an R function that given two genotypes returns the (random) offspring genotype.
+:::
+
+::: answer :::
+```{r}
+randomOffspring <- function(parent1, parent2) {
+  c(sample(parent1, size = 1), sample(parent2, size = 1))
+}
+
+p1 <- randomGenotype()
+p2 <- randomGenotype()
+
+randomOffspring(p1, p2)
+```
+:::
+
+::: exercise :::
+If both parents have genotype $iI^A = \{ i, I^A \}$, compute the
+probability that the offspring will have genotype $ii$ and the
+probability that at least one of the two alleles will be $i$.
+:::
+
+::: answer :::
+```{r}
+parent1 <- c("i", "i^A")
+parent2 <- c("i", "i^A")
+offspring <- apply(
+  expand.grid(parent1, parent2),
+  MARGIN = 1,
+  FUN = function(x) {
+    return(paste(x[1], x[2]))
+  }
+)
+matrix(
+  data = offspring ,
+  nrow = 2,
+  dimnames = list(parent1 = parent1, parent2 = parent2)
+)
+```
+:::
+
+__the power of simulation__
+
+::: exercise :::
+Approximate the probabilities based on simulations,
+that is, simulate a large number of samples and approximate the probability by the corresponding empirical frequency.
+:::
+
+::: answer :::
+```{r}
+parent1 <- c("i", "A")
+parent2 <- c("i", "A")
+
+N <- 10000
+offsprings <- t(replicate(N, randomOffspring(parent1, parent2)))
+
+# both alleles are i
+pii_est <- nrow(offsprings[offsprings[, 1] == "i" &
+                             offsprings[, 2] == "i", ]) / N
+pii_est
+
+table_genotypes <- table(apply(offsprings, 1, paste, collapse = " "))
+barplot(table_genotypes / N, main = "基因型比例", ylab = "频率")
+
+```
+```{r}
+# at least one allele is i
+pi_est <- nrow(offsprings[offsprings[, 1] == "i" |
+                            offsprings[, 2] == "i", ]) / N
+pi_est
+```
+:::
+
+
+
+
+## Two Generations
+
+::: exercise :::
+Suppose the following two-generations scenario:
+
+- Parents with genotypes $iI^A$ and $iI^B$ generate offspring $A$
+- Parents with genotypes $I^AI^B$ generate offspring $B$
+- Parents $A$ and $B$ generate individual $C$
+
+Compute the probability of the genotype of $C$ being $I^AI^B$.
+:::
+
+::: answer  :::
+\[
+\begin{aligned}
+& P(\text{genotype of } C = I^A I^B) \\
+= &
+P(A \rightarrow C = I^A \text{ and } B \rightarrow C = I^B ) \\
++ &
+P(A \rightarrow C = I^B \text{ and } B \rightarrow C = I^A)
+\end{aligned}
+\]
+where we use the notation $K \rightarrow M = zzz$ to denote the events 
+where parent $K$ gives allele $zzz$ to offspring $M$. 
+
+We proceed now to obtain the probabilities 
+\[P(A \rightarrow C = I^A \text{ and } B \rightarrow C = I^B ) 
+\tag{first case} \]
+\[P(A \rightarrow C = I^B \text{ and } B \rightarrow C = I^A) 
+\tag{second case}\]
+
+
+Since the events of two different parents are independent, we have 
+that 
+
+\[
+\begin{aligned}
+& P(A \rightarrow C = I^A \text{ and } B \rightarrow C = I^B )\\
+= &
+P(A \rightarrow C = I^A) \times P(B \rightarrow C = I^B)
+\end{aligned}
+\tag{first case}
+\]
+
+
+To obtain, for example, $P(A \rightarrow C = I^A)$ we need to 
+consider the possible genotypes for $A$,  
+
+Individual $A$ can have one of the four possible genotypes,
+\[ ii , iI^A, iI^B, I^AI^B, \] 
+where
+\[ P(A=ii) = P(A=iI^A) = P(A=iI^B) = P(A = I^AI^B) = 0.25\text{.} \]
+
+Moreover we have that,
+\[
+\begin{aligned}
+P(A \rightarrow C = I^A | A = ii) &= 0 \\
+P(A \rightarrow C = I^A | A = iI^A) &= 0.5 \\
+P(A \rightarrow C = I^A | A = iI^B) &= 0 \\
+P(A \rightarrow C = I^A | A = I^AI^B) &= 0.5
+\end{aligned}
+\]
+
+Thus, using the chain rule,
+that is, $P(A,B) = P(A | B )P(B)$,
+we obtain,
+
+\[
+\begin{aligned}
+&
+P(A \rightarrow C = I^A)\\
+= &0 \times 0.25 + 0.5 \times 0.25 + 
+  0 \times 0.25 + 0.5 \times 0.25 \\
+= &0.25
+\end{aligned}
+\]
+
+
+For individual $B$ we have that,
+\[ P(B = I^AI^A ) = P(I^BI^B) = 0.25 \]
+and
+\[ P(B = I^AI^B) = 0.5 \]
+
+and moreover,
+\[ 
+\begin{aligned}
+P(B \rightarrow C = I^B | B = I^AI^A) &= 0 \\
+P(B \rightarrow C = I^B | B = I^AI^B) &= 0.5  \\
+P(B \rightarrow C = I^B | B = I^BI^B) &= 1 
+\end{aligned}
+\]
+
+Again using the chain rule, we obtain
+
+\[ P(B \rightarrow C = I^B) = 0 \times 0.25 + 0.5 \times 0.5 
++ 1\times 0.25 = 0.5   \]
+
+We can now obtain from equation (first case) that,
+\[ P(A \rightarrow C = I^A \text{ and } B \rightarrow C = I^B ) = 
+    0.25 \times 0.5 = 0.125\]
+    
+Similarly we need to obtain,
+\[ 
+\begin{aligned}
+& P(A \rightarrow C = I^B \text{ and } B \rightarrow C = I^A)\\
+=
+&
+  P(A \rightarrow C = I^B) \times P(B \rightarrow C = I^A)
+\end{aligned}
+\tag{second case}
+\]
+  
+Analogous reasoning to above will lead us to
+\[ P(A \rightarrow C = I^B) = 0.25   \]
+and
+\[  P(B \rightarrow C = I^A) = 0.5 \]
+  
+Thus,
+\[ P(A \rightarrow C = I^B \text{ and } B \rightarrow C = I^A) 
+= 0.125 \]
+
+And finally we obtain
+
+\[
+\begin{aligned}
+& P(\text{genotype of } C = I^A I^B) \\
+= &
+P(A \rightarrow C = I^A \text{ and } B \rightarrow C = I^B ) \\
+& + 
+P(A \rightarrow C = I^B \text{ and } B \rightarrow C = I^A) \\
+= &
+0.125 + 0.125 = 0.25
+\end{aligned}
+\]
+
+:::
+
+::: exercise :::
+Can you code up the two-generation scenario and sample $1000$ observations of the phenotype of $C$ to approximate the probability?
+:::
+
+::: answer :::
+
+:::
+  
+## Bonus 1: Probability distribution of the grand-offspring's phenotype
+::: exercise :::
+Suppose the same two-generation scenario as above.
+Which are the possible phenotypes for $C$?
+:::
+
+::: answer :::
+
+:::
+ 
+::: exercise :::
+Can you describe the probability distribution of the phenotype of $C$?
+:::
+ 
+::: answer :::
+
+:::
+
+  
+## Bonus 2: Conditional probability
+
+::: exercise :::
+What is the conditional probability of the phenotype of $C$ being Type B given that the genotype of $B$ is $I^AI^B$?
+:::
+
+::: answer :::
+
+:::
+  
+  
+
+
+
+
+
+
+
+
+
+# Distributions 
+
+For most common distributions there are already
+helper functions available in R.
+
+## Cumulative distribution function
+
+Cumulative distribution functions are implemented and named
+`p{name of the distribution}`
+
+We have, for example:
+
+1. The binomial distribution
+``` {r}
+pbinom(3, size = 10, prob = 0.3)
+```
+
+2. The Poisson distribution
+``` {r}
+ppois(q = 10, lambda = 4)
+```
+
+3. The Gaussian distribution
+``` {r}
+pnorm(0, mean = 0, sd = 3)
+```
+
+4. The Beta distribution
+``` {r}
+pbeta(q = 0.5, shape1 = 10, shape2 = 3)
+```
+
+It is easy to plot these cdfs with the `curve` function, for example:
+``` {r}
+curve(pbeta(x, shape1 = 10, shape2 = 3), from = 0 , to = 2)
+```
+
+## Density and probability mass function
+
+The probability density (or mass) functions
+are likewise canonically named as `d{name of the distribution`}.
+
+``` {r}
+# probability of exactly 24 out of 100 successes
+# where the probability of success in each trial is .45
+dbinom(24, size = 100, prob = .45)
+```
+
+``` {r}
+# value of the pdf of a N(3, 1) Gaussian variable at 0
+dnorm(x = 0, mean = 3, sd = 1)
+```
+
+Again, we can use the `curve` function to plot density functions.
+Below an example where we plot densities of a Gaussian random variable for
+different values of the standard deviation.
+
+``` {r}
+first_plot <- FALSE
+for (sd in  seq(from = 0.1, to = 1, by = 0.1)) {
+  curve(
+    dnorm(x, mean = 0, sd = sd),
+    add = first_plot,
+    from = -2,
+    to = +2,
+    col = 10 * sd,
+    ylab = "f"
+  )
+  first_plot = TRUE
+}
+```
+
+::: exercise :::
+
+@. Plot the densities of the exponential distribution, for different values of the
+`rate` parameter, into one set of axes.
+Try also to add a legend and choose an 
+appropriate interval for both the x-axis and the rate parameters.
+@. Compute the probability that a random variable $X \sim N(\mu, 1) \in [0,1]$ 
+  for different values of $\mu = -4, -2, 0, 2 , 4$.
+  Find the $\mu$ for which this probability is maximal.
+:::
+
+::: answer :::
+
+:::
+
+# Sampling from known distributions
+
+To generate an iid sample from a given distribution, we can use
+the family of functions `r{name of the distribution}`. 
+Here, an iid sample referes to a collection of observations that
+were obtained independently and identically distributed.
+
+For example the following expression generates an iid sample of size 5 from 
+the uniform distribution in the interval $[10, 17]$,
+``` {r}
+runif(n = 5, min = 10, max = 17)
+```
+
+An iid sample of size $10$ from a Binomial distribution with parameters 
+$\text{size} = 100, p = 0.3$,
+``` {r}
+rbinom(10, size = 100, prob = 0.3)
+```
+
+::: exercise :::
+@. Sample $100$ iid observations from a Gaussian distribution with mean $0$ and variance
+$1$. 
+@. Generate an iid sample of $10$ observations from $\operatorname{Uniform}([0,5])$ and compute
+    the maximum of the values.
+    Repeat with sample sizes 
+    $50,100$, and $1000$.
+@. Implement a function that simualtes $1$ observation from a Binomial 
+distribution with given parameters $n,p$, without using `rbinom`. 
+:::
+
+::: answer :::
+
+:::
+

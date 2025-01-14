@@ -1,0 +1,154 @@
+---
+title: 'StatBI/E Exercises: Week 4'
+output:
+  html_notebook:
+    code_folding: none
+    toc: yes
+    toc_float:
+      collapsed: no
+    df_print: paged
+    theme: sandstone
+    highlight: kate
+  html_document:
+    toc: yes
+    df_print: paged
+  pdf_document:
+    toc: yes
+---
+<style>
+.exercise{background-color:#c9e2a5;padding:1ex 1ex .1ex 1ex;}
+.answer{background-color:#f3f3a5;padding:1ex 1ex .1ex 1ex;}
+</style>
+::: exercise :::
+[This is how exercises are highlighted]
+:::
+::: answer :::
+
+:::
+</small>
+
+
+
+# Exercise 1: A trigonometric density (continuation of Week 3, Exercise 1)
+
+You can load the data in the file `angles.txt` via
+``` {r}
+angles <- read.table("angles.txt")$x
+```
+The data has been generated as iid observations
+from a random variable with density
+$f(x|k) \propto \sin(x)^k$
+on the interval $[0, \pi]$
+(the density is $0$ outside of the interval).
+Notation: $\propto$ stands for
+_proportional to_, that is,
+$f(x|k) = C_k \sin(x)^k$,
+where $C_k$ is
+an appropriately chosen normalisation constant
+such that the density integrates to $1$.
+
+In previous exercises you have implemented
+the density, CDF, and quantile function
+for this statistical model and devised the MLE for $k$
+(you may refer to the respective sample solutions
+and copy some of the results as needed).
+
+## Exercise 1.1
+
+::: exercise :::
+Build a $99\%$ confidence interval for $k$
+based on the data in `angles.txt`.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 1.2
+
+::: exercise :::
+Test whether $k > 10$ at a confidence
+level $\alpha = 0.05$
+for the data in `angles.txt`;
+you may use a Wald test for $H_0: k \leq 10$.
+:::
+
+::: answer :::
+
+:::
+
+
+
+
+
+# Exercise 2: Different two-sample tests
+
+Assume we are given two sets of observations
+\begin{aligned}
+ X_1, \ldots, X_m &\sim N(\mu_1, \sigma^2)  \\
+Y_1, \ldots, Y_n &\sim N(\mu_2, \sigma^2)  
+\end{aligned}
+with—possibly different—means $\mu_1$ and
+$\mu_2$ and equal variance $\sigma^2$.
+We wish to test whether the two means
+are equal, that is, $\mu_1 \overset{?}{=} \mu_2$.
+
+## Exercise 2.1
+
+::: exercise :::
+Simulate two groups of iid observations
+following two normal distributions of your choice.
+:::
+
+::: answer :::
+
+:::
+
+
+## Exercise 2.2
+
+::: exercise :::
+Compute the p-value of the two-sample t-test with equal variance for the data generated in Exercise 3.1.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 2.3
+
+::: exercise :::
+Compute the Wald test for $H_0: \mu_1 = \mu_2$
+using the test statistic $\delta = \overline{X} - \overline{Y}$ for the data generated in Exercise 3.1.
+
+Since $\delta$ is Gaussian distributed (can you argue why?), its standard error
+and thus an estimator $\widehat{se}(\delta)$
+can be obtained analytically.
+(As fallback, you may revert to bootstrap.)
+:::
+
+::: answer :::
+
+:::
+
+
+## Exercise 2.4
+
+::: exercise :::
+Perform the likelihood ratio test for $H_0: \mu_1 = \mu_2$ for the data generated in Exercise 3.1.
+:::
+
+::: answer :::
+
+:::
+
+
+## Exercise 2.5
+
+::: exercise :::
+Compare the results obtained in Exercises 3.2, 3.3, and 3.4.
+:::
+
+::: answer :::
+
+:::

@@ -1,0 +1,221 @@
+---
+title: "StatBI/E Week 2"
+output:
+  html_notebook:
+    code_folding: none
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: paged
+    theme: sandstone
+    highlight: kate
+  html_document:
+    toc: true
+    df_print: paged
+  pdf_document:
+    toc: true
+---
+<style>
+.exercise{background-color:#c9e2a5;padding:1ex 1ex .1ex 1ex;}
+.answer{background-color:#f3f3a5;padding:1ex 1ex .1ex 1ex;}
+</style>
+::: exercise :::
+[This is how exercises are highlighted]
+:::
+::: answer  :::
+[This is how your answers are highlighted]
+:::
+
+
+
+
+# Exercise 1: A trigonometric density
+
+Let $f(x|k) \propto \sin(x)^k$
+be a family of (non-normalized) densities
+on the interval $[0, \pi]$,
+parameterised by
+$k = 1,2,\ldots$. 
+
+## Exercise 1.1
+::: exercise :::
+Define a function `dsin`
+that implements the normalized 
+density $f(x|k)$.
+It has to behave similar to other density functions
+in R, for example,
+similar to `dexp` and `dnorm`
+the argument must be called `x` and can be
+a general numerical vector.
+Moreover, the function must accept an additional
+parameter `k` with default value $1$
+(the parameter of the family $f(x|k)$).
+:::
+
+::: answer :::
+
+:::
+
+
+## Exercise 1.2
+::: exercise :::
+Define,
+similarly to other CDF functions in R,
+a function `psin` that implements the CDF
+corresponding to `dsin`. 
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 1.3
+::: exercise :::
+Produce plots of both the density and the CDF
+for different values of the parameter $k$.
+Make the plot look nice, with colours, a legend, etc.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 1.4
+::: exercise :::
+Obtain variance and expected value for different values of $k$. 
+:::
+
+::: answer :::
+
+:::
+
+## Optional Bonus Exercise 1.5
+::: exercise :::
+Try to implement the 
+_inverse transform sampling_ method
+for this density function. 
+
+Hint: The function `uniroot` finds the
+solution of $g(t) = t$ for any given function $g$ in a given interval.
+It is useful to obtain the 
+inverse of the CDF $F(x|k)$,
+that is, the quantile function.
+:::
+
+::: answer :::
+
+:::
+
+## Optional Bonus Exercise 1.6
+::: exercise :::
+Test the sampling procedure implemented in the previous exercise,
+plotting a histogram of the generated data and the real density. 
+:::
+
+::: answer :::
+
+:::
+		
+
+
+
+
+# Exercise 2 A case study of neuronal data
+
+Neurons work by generating and propagating, action potentials, called 'spikes'. The time interval 
+between two adjacent spikes, or inter-spike interval (ISI), is often used in computational neuroscience.
+In the file `neuronspikes.txt` you can find some ISI measurements. 
+
+To load the data in R, you can use the following line:
+```
+isidata <- read.table("neuronspikes.txt", col.names = "isi")
+```
+
+::: answer  :::
+  We load the data 
+``` {r}
+isidata <- read.table("neuronspikes.txt", col.names = "isi")
+# here we have the vector of observations
+isi <- isidata$isi
+```
+:::
+  
+  
+## Exercise 2.1 
+  
+::: exercise :::
+Plot the histogram of the ISI data using the function `hist`, try with different 
+values for the `breaks` parameter. For the remainder, we will use `breaks = 50`. 
+Moreover, use the argument `probability = TRUE` to plot probabilities.
+:::
+  
+::: answer :::
+
+:::
+  
+## Exercise 2.2 
+  
+::: exercise :::
+As a first approximation we can use the exponential distribution, that is often used 
+to describe intervals between events, such as, for example, neural spikes. 
+The density of the exponential distribution is
+$f(x) = \lambda e^{-\lambda x}$, and in R
+we can use the `dexp` function where the $\lambda$ parameter is called `rate`.
+Plot the densities of the exponential distribution on top of the histogram of the ISI data 
+for different values of the parameter $\lambda = 0.5, 0.6, \ldots, 1.4, 1.5$. Which values
+of $\lambda$ do you think lead to a better fit to the data?
+:::
+  
+::: answer :::
+
+:::
+  
+## Exercise 2.3 
+  
+::: exercise :::
+Using a value $\lambda^*$ that you decided on in the previous exercise, find the 
+value of $P( X \leq 1)$ and the value of $P( X \in [0.5, 1.5] )$ (where $X$ is the random variable that records the ISI value and we assume $X \sim \exp(\lambda^*)$). Remember that in R we can compute the CDF of a random variable with exponential distribution using the  function `pexp`. The CDF $F_X$ is defined as
+$$ F_X(x) = P(X \leq x) .$$
+:::
+  
+::: answer :::
+
+:::
+
+## Exercise 2.4
+::: exercise :::
+Make a Q-Q plot of the ISI data against the 
+exponential distribution
+with parameter $\lambda = 1.15$. 
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 2.5
+::: exercise :::
+Make a Q-Q plot of the ISI data against the
+gamma distribution with parameters
+`shape = 1.56` and 
+`rate = 1.79`.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 2.6
+::: exercise :::
+Additionally plot the identity line in both Q-Q plots above.
+How do the Q-Q plots compare?
+:::
+
+::: answer :::
+
+:::
+
+
+
+
+

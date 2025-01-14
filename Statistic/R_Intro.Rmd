@@ -1,0 +1,1081 @@
+---
+title: "R Intro"
+output:
+  html_notebook:
+    code_folding: none
+    toc: true
+    toc_float:
+      collapsed: true
+    df_print: paged
+    theme: sandstone
+    highlight: kate
+---
+
+(based on R Intro by Gherardo Varando)
+
+<style>
+.exercise{background-color:#c9e2a5;padding:1ex 1ex .1ex 1ex;}
+</style>
+::: exercise :::
+[This is how exercises are highlighted]
+:::
+
+## The R Software Environment 
+
+As [The R Project website](https://www.r-project.org/) states :
+
+ > R is a free software environment for statistical computing and graphics. It compiles and runs on a wide variety of UNIX platforms, Windows and MacOS. 
+ 
+ >R provides a wide variety of statistical (linear and nonlinear modelling, classical statistical tests, time-series analysis, classification, clustering, …) and graphical techniques, and is highly extensible.
+ 
+ and
+ 
+ > R is an integrated suite of software facilities for data manipulation, calculation and graphical display. It includes
+  - an effective data handling and storage facility,
+  -  a suite of operators for calculations on arrays, in particular matrices,
+  -  a large, coherent, integrated collection of intermediate tools for data analysis,
+  -  graphical facilities for data analysis and display either on-screen or on hardcopy, and
+  -  a well-developed, simple and effective programming language which includes conditionals, loops, user-defined recursive functions and input and output facilities.
+
+
+### Install R 
+
+To install R visit [https://cran.r-project.org/](https://cran.r-project.org/) 
+and follow the link and the instructions for your operative system. 
+
+### R basics
+
+- R files have the `.R` extension. 
+
+- To enter R interactive console just execute `R` in the linux terminal or in
+Windows command line.
+
+- Once the R console is active you can type R commands. 
+
+- Use `q()` to quit. 
+
+- Use `Rscript filename.R` to execute an R source file. 
+
+- use `source(filename.R)` to load an R file in the current 
+session.
+
+### R packages
+
+R comes with a lot of basic functions (mathematical, statistical), but the
+real strength of R is the huge ecosystem of packages. 
+
+#### Install packages
+
+To install a package we can use the R call 
+`install.packages("name of the package")`. 
+
+This will install the given package from the official R repository 
+[CRAN](https://cran.r-project.org/). 
+
+Some packages are available only from the alternative repository 
+[Bioconductor](http://www.bioconductor.org/), to install this packages you need 
+first to install Bioconductor with the command
+`source("https://bioconductor.org/biocLite.R")` and the call the function
+`biocLite("name of the package")`.
+You can find the extensive list of packages available in Bioconductor 
+[here](http://www.bioconductor.org/packages/release/BiocViews.html#___Software).
+
+#### Load a package 
+
+Before using the functions of a given installed package we need to load it
+into the current session. To do so we use the `library` function as,
+```{r}
+library(parallel) ##load the parallel package for parallel computing
+```
+### R help and package documentation
+
+R functions and packages are extensively documented, even if, especially for
+beginners, read the documentation can be slightly confusing. It is important
+to learn how to extract information from the help. 
+
+If you want to display the documentation relative to a given function, it is
+sufficient to call `?name.of.the.function`,
+```{r}
+?plot
+```
+
+If we want to search the entire R (and packages) documentation for a given 
+expression we can use the `??` operator as in,
+```{r}
+??"linear model"
+```
+
+We can restrict the search to a given package with the 
+`??package.name::search.string` syntax,
+```{r}
+??utils::"help" ## search pages with the "help" string in the utils package
+```
+
+
+### R resources 
+
+-  [https://cran.r-project.org/manuals.html](https://cran.r-project.org/manuals.html)
+
+
+## Rstudio 
+
+R can be used directly via command line and with a very basic text editor but 
+the use of the [RStudio](https://www.rstudio.com/) is much easier and strongly suggested. 
+
+
+### Install RStudio 
+
+To install the Rstudio editor just choose the appropriate installer from the 
+[download page](https://www.rstudio.com/products/rstudio/download/#download)
+
+### Rstudio interface
+
+![R studio interface](R_Intro_1.png)
+
+
+The default Rstudio interface it is usually divided in four areas:
+
+- A: The Source Pane, here we can edit the source files (.R) or other 
+      text files. We can execute a part of a source file by selecting it and pressing 
+      Ctrl + Enter. 
+- B: The console Pane, here is shown the R console, the output of R commands will be shown here, and we can also directly execute here some R code. 
+- C: The upper right pane contains information on the workspace (that is the 
+      set of object defined) and the command history. 
+      From this pane we can clean all the workspace, save it or load a previous saved workspace. 
+- D: The lower right pane contains other tools. The more useful is the Plots 
+(where plot are shown) and the Help (packages documentation).   
+
+
+## The R language 
+
+### Comments
+
+In R, comments are added starting with a `#` character,
+```{r}
+### Comments are useful to explain the code, improve readability and 
+### add notes to the code files
+
+# this is a comment line
+## Now we will sum 10 and 12 and display the result
+10 + 12  #the sum 
+
+
+```
+
+### Variables and assignments 
+
+To assign a value to a variable in R we use `<-`:
+
+```{r}
+a <- 1
+
+print(1)
+```
+
+In R variables are not typed, that means that we do not have to specify 
+beforehand the type of variables we want to assign, moreover a variable can 
+change its type, 
+```{r}
+x <- 100 #here we assign an integer to x
+print(x)
+
+x <- "The variable x" #here we assing a string to the same variable x
+print(x)
+```
+This allow us a great flexibility when writing R code, but also we have 
+to be careful because it is more easy to write code that produce errors,
+```{r}
+x <- "this is a string"
+
+try(1 + x, silent = F, outFile = stdout())   ## just a way to show that 1 + x return and error
+```
+
+
+It is also possible to use `=` to assign a variable, but culturally in R `<-` is 
+usually the most common way. 
+
+There exist also the *right* assignment operator `->` :
+```{r}
+12 -> x
+
+x + 1
+```
+
+It can be useful to work in the console, but for clarity is better to avoid it 
+while writing code. 
+
+To print in console the value of a variable `x` we can use the `print(x)` function
+or just type the name of the variable. 
+
+```{r}
+print(x)
+```
+
+#### Types of variables
+
+In R there are different types of variables, to check the type of a variable 
+we can use the `typeof` function. 
+
+Numeric values are represented as `double`:
+```{r}
+v <- 5
+typeof(v)
+```
+
+Logical values `TRUE` and `FALSE`,
+```{r}
+typeof(TRUE)
+```
+
+The values `TRUE` and `FALSE` can also be expressed as `T` and `F`. 
+
+
+Complex numbers:
+```{r}
+z <- 1 + 3i 
+typeof(z)
+```
+
+
+Characters,
+```{r}
+typeof("Hello")
+```
+
+##### {.exercise}
+
+1. Define a numeric variable and print its value to console. 
+2. Find how to extract the imaginary part of a complex number (use the help).
+
+### Arithmetic operations and basic math functions {.tabset}
+
+The usual arithmetic operation and math functions are implemented in R. 
+
+#### Sum
+```{r}
+1 + 2
+10 - 3 
+```
+
+#### Multiplication and division
+```{r}
+20 * 2 
+10/3
+3^2
+```
+
+#### Integer division
+```{r}
+10 %/% 3 #integer division
+10 %% 3 # 10 mod 3
+```
+
+#### Logarithms and exponentials
+
+```{r}
+exp(2.5)
+
+log(10)
+
+log2(16) #logarithm in base 2
+
+log10(100)
+```
+
+##### {.exercise}
+1. Compute $\ln(x)$ for $x= -1 , 1, 2$.
+2. Compute $e^{x^2}$ for $x= 1,2$ . 
+
+#### Trigonometric functions
+
+```{r}
+sin(2*pi) ##it is zero ....
+
+cos(pi)
+```
+
+##### {.exercise}
+
+1. Compute the value of $\cos(x)$ for $x = 0, \frac{\pi}{2}, \pi, 2\pi$.
+2. Compute $\cos^2(x) + \sin^2(x)$ for different values of x. 
+
+### Logical operators
+
+In R we can test equality or inequalities similarly to other 
+programming languages
+
+Inequalities:
+```{r}
+1 < 2
+10 >= 10 
+-1 > 10 
+```
+
+Equality:
+```{r}
+v <- 1
+v == 1
+v != 2
+v != 1
+
+a <- "hello"
+a == "hello"
+a == "Hello"
+a != "aaaa"
+```
+
+We can join two or more statements with `&` (AND) or with `|` (OR):
+```{r}
+x <- 10 
+
+(x < 100) & (x > 0) # x smaller than 100 AND greater than 0
+
+(x > 100) | (x < 0) # x greater than 100 OR smaller than 0
+```
+
+We can negate a statement with the `!` operator:
+```{r}
+!(x == 1) # NOT (is x equal to 1)
+```
+
+We can also assign the value of a comparison to a variable:
+```{r}
+x <- 5
+test <- x == 4  #now in the variable test we have a value (TRUE or FALSE)
+!test #negate the boolean variable test
+```
+
+##### {.exercise}
+
+1. Check if in R if $\sin(0) = 0$.
+2. Check if $\sin(2\pi) = 0$. 
+3. Check if $e^{\ln(x)} = x$ for $x = 1,2,3,4$. 
+
+### Vectors
+
+Vectors can be created with the command 
+`c(el1, el2, el3, ..., eln)` as in:
+```{r}
+v <- c(1, 3, 5, 7)
+print(v)
+```
+
+The function `c()` is really the concatenation opeartion, but it is 
+useful to create vectors. 
+
+To check the length of a vector we use the function `length`:
+```{r}
+length(v)
+```
+The elements in a vector are obtained with `v[i]`, the index of the element starts
+with 1:
+```{r}
+v[1]
+v[2]
+```
+
+#### Vector operations
+
+Almost all operations and function in R are vectorized, that is they can be 
+executed on a vector, component-wise. 
+
+We can sum tow vectors:
+```{r}
+x <- c(3, 1, 5, -2.4, 5.4, 1.2, -15.6) #define a vector x
+y <- c(2, 0, 4, 2, -1, 0 , 0) #define a vector y with the same lenght as x
+
+x + y #compute the sum component-wise
+
+```
+
+We can multiply them:
+```{r}
+x*y
+```
+
+Or divide:
+```{r}
+x/y 
+```
+
+Or compute a mathematical function:
+```{r}
+abs(x)
+```
+
+#### Subsetting a vector
+
+We saw that to select the $i$th element of a vector `v` we just use the `[]` 
+operator:
+```{r}
+v <- c(3, 2, 5, 7, 4, 3)
+v[3] 
+
+v[3] <- 0 ## this assign 0 to the 3rd position of the vector
+v
+```
+
+How we can now extract all the elements of the vector `v` that satisfy 
+some condition. For example all the element smaller than 5.
+If we write
+```{r}
+v < 5 
+```
+we obtain a vector of logical values indicating for every element of the vector `v` if the condition `<5` is fulfilled. 
+
+We can now use this vector of logical values to obtain a subset of the original vector:
+```{r}
+v[ v<5 ]
+```
+
+We can also select a subset of element with the corresponding indexes :
+```{r}
+v[ c(1,3)] #the first and the third element
+```
+
+And we can exclude some of the element:
+```{r}
+v[-2] #all but the 2 element
+
+v[-c(1,3)] #all but the first and third element
+```
+
+###### {.exercise}
+
+1. Define a vector with `v <- runif(1000)`. Now find the proportion of elements of
+the vectors that are less than $0.15$.
+2. For the same vector `v` substitute all the elements less than $0.15$ with
+ the value $-1$. 
+
+#### Joining vectors
+
+To join two vectors just use the `c()` function:
+```{r}
+v1 <- c(1,2)
+
+v2 <- c(3,4,5)
+
+c(v1,v2)
+```
+
+
+#### Sequences
+
+Sequences of integers or of equally spaced values are very useful and in R there
+are easy ways to create them. 
+
+One of the most basic way is the colon operator `a:b` that generates
+regular sequences with steps equals to $1$ or $-1$.
+```{r}
+1:10 
+```
+
+```{r}
+8:(-3)
+```
+
+The generalization of the colon operator `:` is the function `seq` 
+```{r}
+seq(from = 0, to = 4 , by = 0.25) ## specifying the step 
+```
+
+```{r}
+seq(from = 0, to = 4, length.out = 7) ##specifying the length of the sequences
+```
+
+###### {.exercise}
+
+1. Create a sequence of length $100$ from $0$ to $13$ without using `seq` 
+(use instead `:` and arithmetic operations between vectors).
+2. Use now `seq` to create the same sequence as in 1. and compare the results 
+   (you can test it with `all()`).
+3. Create a sequence from $-1$ to $0$ by step of length $0.013$ and then 
+a sequence of length $12$ from $0$ to $1$, finally join the two sequences.  
+
+#### Sums and products
+
+Sometimes we need to sum or multiply all the elements of a vector, we can thus 
+use the built-in functions `sum` and `prod`,
+```{r}
+v <- 1:10
+sum(v)
+
+prod(v)
+```
+
+### Matrices 
+
+To create matrices in R we can use the `matrix() ` function, that takes as 
+arguments: `data` the vector of element of the matrix, `nrow` the number of rows,
+`ncol` the number of columns. 
+
+```{r}
+matrix(data = c(1,2,3,4,5,6) , nrow = 2 )
+```
+
+as we can see the matrix if filled  column by column. If we prefer to fill it 
+row-wise we need to specify the argument `byrow = TRUE`:
+
+```{r}
+matrix(data = c(1,2,3,4,5,6) , nrow = 2 , byrow = TRUE)
+```
+
+The `data` arguments is recycled if needed, so for example to create a matrix
+with constant elements is very easy:
+```{r}
+A <- matrix(data = 5, nrow = 4, ncol = 3)
+print(A)
+```
+
+To obtain the number of rows and/or columns from a matrix, use the functions 
+`nrow()` and `ncol`,
+```{r}
+nrow(A)
+ncol(A)
+```
+
+Or you can obtain both numbers directly with the function `dim`,
+```{r}
+dim(A)
+```
+#### Subsetting a matrix
+
+To access and modify elements of a matrix we use the `[]` operator,
+```{r}
+M <- matrix(c(1,2,3,4,5,6,7,8,9,10,11,12), nrow=4) #matrix with 4 rows and 3 columns
+M[1,1] ## the element in the first row and first column
+
+M[3,1]
+```
+
+If we want to extract an entire row,
+```{r}
+M[2,] #the second row
+```
+
+or a column,
+```{r}
+M[,1]
+```
+
+If you want to extract a sub matrix just specify the indexes,
+```{r}
+subM <- M[c(1,3), c(1,2)]
+print(subM)
+```
+
+
+#### The `diag` function
+
+The `diag` function in R can be used for different purposes. 
+
+First of all it can extract the diagonal of a matrix,
+```{r}
+A <- matrix(data = c(1,2,3,4), nrow = 2)
+A
+diag(A)
+```
+
+Similarly, can be used to set the diagonal of a matrix to a new value,
+```{r}
+diag(A) <- c(10,20)
+A
+```
+
+Moreover, can be used to create diagonal matrices, in this case the argument 
+has to be a vector or a numerical value,
+```{r}
+diag(c(1,2,3,4))
+```
+
+We can thus use the `diag` function to create the identity matrix,
+```{r}
+diag(1, nrow=3)
+```
+
+##### {.exercise}
+
+1. Create a $10 \times 10$ matrix with the R command 
+`matrix(rnorm(100),nrow = 10)` and assign it to a variable. 
+2. Compute the trace (sum of the elements in the diagonal) of the matrix.
+3. Compute the trace of the $3 \times 3$ sub-matrix of the first 3 rows and the last 3 columns.
+4. Create a diagonal $1000 \times 1000$ matrix such that the diagonal 
+is the sequence of numbers  $a_i = \frac{1}{i^2}$. 
+5. Can we use the functions `sum` and `prod` with matrices? How do they work?
+
+### List
+
+Lists or "generic vectors" are another type of data. A list is a set of 
+(possibly named) elements. Each element can be any type of R object (e.g a vector
+, a matrix, another list etc.. ).
+To create a list we use the function `list()`, where the arguments are the 
+elements of the list. 
+
+For example here we create a list with elements: a vector of length 2, a 
+diagonal $3 \times 3$ matrix, and a string.
+```{r}
+l <- list(c(1,2), diag(1, nrow=3), "I am a string")
+print(l)
+```
+
+To access an element of a list we use the `[[]]` operator:
+```{r}
+l[[3]]
+```
+
+The `[]` operator will instead output the sub-list with the given indexes:
+```{r}
+l[c(1,3)]
+```
+
+Lists are probably more used when the element have names, to create a list with
+named elements, we just specify them in the `list()` function:
+```{r}
+l <- list(vec = c(1,2), matr = diag(1, nrow=3), mystring = "I am a string")
+```
+
+Now we can access the elements with the `$` operator, using their names:
+
+```{r}
+l$mystring
+```
+
+We can also create new elements (or modify existing ones),
+```{r}
+l$newString <- "AAAA"
+```
+
+The function `length` returns the number of elements in a list,
+```{r}
+length(l)
+```
+##### {.exercise}
+
+1. Create a list of length 2 with elements named `"mon"` and `"wed"` 
+where in each element we record the number of hours of this course 
+(3 for Monday and 2 for Wednesday).
+2. How we could now also record the information for the number 
+of exercise hours? (a vector? a list?)
+3. Add now another element named `"tot"` to the list in point 1. and record 
+there the total number of hours. 
+
+
+### Data frames
+
+Data frames are probably the most useful data structure when dealing with
+statistical problems. As the name suggests they represent a data set of 
+observations over different variables. 
+
+From the point of view of R, data frames are somehow like a matrix (they have 
+two dimensions, rows and columns) but as we will see they also are similar to 
+lists in the way we can extract some of the values. 
+
+To create a data frame we can use the `data.frame` function
+
+```{r}
+DF <- data.frame(A = c(1, 0, 1, 1, 0), B = c(100, 98 , 99, 100, 110))
+print(DF)
+```
+
+We can access elements of a data frame in exactly the same way as matrices,
+```{r}
+DF[3,2]
+```
+
+But we can also use the name of the variables,
+```{r}
+DF[4, "A"]
+```
+
+And we can extract the column corresponding to a variable, using the `$` 
+operator, similarly to lists,
+```{r}
+DF$B 
+```
+
+#### Extracting observations 
+
+Given a dataset we need sometimes to extract some of the observations (rows) 
+given some criteria. Lets see now some examples, we will use the following data
+frame with 4 variables and 10 observations.
+```{r}
+DF <- data.frame( X = as.factor(c(1,1,0,0,1,0,0,1,0,1)),
+                  Y = c(13, 10, 5, 23 , 32, 7, 19, 6, 11, 3),
+                  Z = c(-2, 1, 0, 2, -3, 0, 2, 1, -2, -1),
+                  W = c(0.3, 0.1, 1.3, 0.7, 0.9, 1.1, 0.2, 0.1, 0.9, 1)) 
+DF
+```
+
+Extract the observations such that $X = 1$ can be done by,
+```{r}
+   DF[ DF$X == 1, ]  
+```
+
+Extract the observations where $Y > 10$,
+```{r}
+  DF[ DF$Y > 10, ]
+```
+
+Extract the observations where $Y>10$ and $Z < 0$
+```{r}
+  DF[ DF$Y > 10 &  DF$Z < 0, ]
+```
+##### {.exercise}
+1. Load the dataset `trees` with the command `data(trees)`. 
+   You can now find it in the variable `trees`.
+2. How many variables are in the dataset? How many observations? 
+3. Compute the sum of the variable `Volume` for all the observations. 
+4. Count how many trees (observations) have a recorded height lower than $70$. 
+   Can you do it in just one line of code? 
+
+### `if else` statement
+
+Lets introduce now the basic form of control flow in R, the `if else` statement. 
+
+As in other programming language the `if (cond) cons.expr  else alt.expr` 
+will test if a condition (`cond`) is `TRUE`, if so it will execute the
+first expression (`cons.exp`) otherwise it will execute the second 
+expression (`alt.expr`). The `else alt.expr` part can be omitted and in this 
+case just the first expression (`cons.expr`) will be executed if the condition is
+fulfilled. 
+
+For example lets use the `if else` statement to test if a number is positive 
+before applying the square root,
+```{r}
+x <- 10
+
+if (x > 0){
+  print(sqrt(x))
+} else {
+  print("Negative number")
+}
+```
+
+```{r}
+x <- -5
+
+if (x > 0){
+  print(sqrt(x))
+} else {
+  print("Negative number")
+}
+```
+### `for` loop
+
+Through the `for` statement is possible to perform the same expression for
+different values of a variable. 
+
+For example with a `for` we can sum all the elements of a vector 
+(surely we already saw a better way...):
+```{r}
+v <- c(10, 15, -1, 0)
+
+tot <- 0
+for (a in v){
+  tot <- tot + a 
+}
+print(tot)
+
+```
+
+It is common to use the `for` coupled with the `:` operator or the `seq` 
+function, 
+```{r}
+for (i in 1:5){
+  print(paste("this is the", i, "iteration"))
+}
+```
+
+```{r}
+tot <- 0
+for (x in seq(from = 0, to = 1, by = 0.1)){
+  tot <- tot + x^3
+}
+print(tot)
+```
+##### {.exercise}
+1. Write a code to compute $100! = 1\cdot 2 \cdot 3 \cdots 99 \cdot  100$.
+
+### Functions 
+
+As every programming language, we can define new functions in R using the 
+following syntax,
+```{r}
+myNewFun <- function(arg1, arg2 = 2, arg3 = NA){
+  #some computations
+  #
+  # example:  
+  res <- arg1 + arg2 
+  #
+  # return the result
+  return(res)
+} 
+```
+
+####  Arguments of a function 
+
+The arguments of a function are declared when we define it, we can add 
+default values to the arguments, in this case if the argument is not 
+assigned when the function is called, the default value will be used. 
+
+```{r}
+f_sum <- function(a, b = 0){
+   a + b  #we can omit the return statement, 
+          #the function will return the last computed value
+}
+
+f_sum(1, 3)
+
+f_sum(2)
+```
+
+We can also explicitly name the arguments when we call a function,
+```{r}
+f_sum(b = 4, a = 1)
+```
+
+
+##### {.exercise}
+
+1. Write a function that return the product of two numbers
+2. Write a function that given a vector `x` return a vector with the 
+maximum and minimum values of `x` 
+3. Write a function that given a $2 \times 2$ matrix returns its determinant.
+If the matrix is square of dimensions grater than $2$, it prints the string 
+`Can't compute determinants of n x n matrices` 
+where `n` is the 
+dimension.
+If the matrix is not a square matrix it prints the string `Can't compute 
+determinants of rectangular matrices`.
+
+#### {}
+
+We can also have functions that do not accept any arguments as,
+```{r}
+f_hello_world <- function(){
+  print("Hello world")
+}
+```
+
+or,
+```{r}
+f_const <- function(){
+  return(5)
+}
+
+```
+
+#### Return value
+
+Functions can return every R object but just one object, sometimes it is useful to
+return a named list when we want to return more than one value. 
+
+```{r}
+f_summary <- function(x) {
+  l <- list()
+  l$mean <- mean(x)
+  l$var <- var(x)
+  l$max <- max(x)
+  l$min <- min(x)
+  return(l)
+}
+
+f_summary(rnorm(100))
+```
+
+
+
+
+### `apply`, `lapply`, `sapply` 
+
+The `for` loops can be extremely slow in R, when is possible code should be
+vectorized and in the majority of case `for` loops can be replaced by
+`apply`, `lapply` or `sapply` functions. 
+
+#### `lapply`
+
+`lapply` apply the same function to every element of a list (or vector) `X` and 
+return  a list of the same length with the returned values. 
+
+For example we can use `lapply` to create different sequences with different 
+lenghts,
+```{r}
+lapply( 1:10, function(i) 1:i  )
+```
+
+or to performa some operations on a list of lists,
+```{r}
+classroom <- list(
+student1 = list( grade1 = 8, grade2 = 6 , name = "Niels" ),
+student2 = list( grade1 = 7, grade2 = 4, name = "Julia" ),
+student3 = list( grade1 = 4, grade2 = 6, name = "Chris") 
+)
+
+grades1 <- lapply( classroom, function(stud) return(stud$grade1))
+grades1
+```
+
+`lapply` can also be used with data.frames, in this case the elements are 
+the columns of the data.frame. 
+
+```{r}
+D <- data.frame( A = rnorm(100), B = runif(100), C = runif(100))
+
+lapply(D, sum) #obtain the sum of the observations of A, B, C 
+```
+
+##### {.exercise}
+
+1. Use `lapply` to build $100$ identity matrices of different dimensions 
+ranging from 1 to 100. 
+
+#### `sapply`
+
+`sapply` is a simplified version of lapply that convert the return object to 
+a vector.
+
+For example in the last example of the classroom,
+```{r}
+sapply( classroom, function(stud) return(stud$grade1))
+```
+
+##### {.exercise}
+
+1. Use `sapply` to compute $k!$ for $k = 1, \ldots, 100$
+
+#### `apply`
+
+`apply` return a vector or an array of values obtained by applying a function to 
+the marginal of an array, matrix or a data.frame. 
+It is useful for example to apply a function
+to all the columns or rows of a matrix or a dataframe. 
+
+```{r}
+m <- matrix(data = rnorm(100), nrow = 20) # a 20 x 5 matrix
+
+apply(m, MARGIN = 1, sum) #obtain the row-wise sums
+
+apply(m, MARGIN = 2, sum) #obtain the column-wise sums
+```
+
+### Plots 
+
+With R is very easy to create various plots. The principal function is obviously
+`plot()` that works with different arguments. We will see now some of the most 
+basic examples:
+
+#### Points and lines
+
+We can give the x-y coordinates of the point we want to plot
+```{r}
+x <- seq(from =-10, to = 10, by = 0.25)
+y <- x^3 - 3*x^2 + 2*x
+plot(x,y, col = "red")
+```
+
+If we use the argument `type = "l"` instead of plotting the points, lines 
+connecting two consecutive points will be plotted. 
+```{r}
+plot(x,y, col = "red", type = "l" )
+```
+ 
+#### Adding points or lines to a plot
+
+Sometimes we want to add some new element to a already produced plot, 
+for example if we want to draw the graph of two functions in the same plot. 
+TO do so we can use the functions `points()` or `lines()`.
+
+```{r}
+plot(x, x^2, type = "l", col = "red", ylim = c(-10,10))
+lines(x, x^3, col = "blue")
+lines(x, x^4, col = "green")
+legend("right",legend = c("x^2","x^3","x^4"), col = c("red", "blue", "green"), 
+       lty = c(1,1,1))
+```
+
+
+#### Plotting functions
+
+If we have a function `f` that return a numerical value and accept a numerical value as an input 
+(that is, an R function the implement a mathematical real function 
+$f:\mathbb{R} \mapsto \mathbb{R}$ ), we can plot it directly with a single plot call,
+
+```{r}
+f <- function(x){
+  return(50*sin(x) ^ 2 + x ^ 3)
+}
+
+g <- function(x){
+  return(50*cos(x) + x ^ 2)
+}
+plot(f, from = -5, to = 10, col = "blue")
+plot(g, from = -5, to = 10, col = "red", add = TRUE)
+```
+
+We used the argument `add = TRUE` to add the second plot to the first one. 
+
+Sometimes it is useful to use the `curve` function to plot mathematical functions,
+
+```{r}
+curve( 1 + sin(x), from = -3, to = 4)
+```
+
+#### {.exercise}
+
+1. Plot the graph of the function $f(x)=ln(1 + |x|) + x^2$ without 
+using the `curve` function or the plotting of a function. 
+2. Plot (in the interval $[-5,5]$) the graphs of the functions $f(x)=\alpha \sin(\alpha x)$ for 
+$\alpha=1,\ldots,10$, use different colors for each value of the parameter 
+$\alpha$. Be careful to show the graphs of all the functions in the plot. 
+For some values of the parameter the graph shown is not very *smooth*, how we can 
+improve the plotting?
+
+
+## Code style 
+
+It is important to keep the code readable for this reason we can follow some 
+simple rule.
+
+1. Put a space between binary operator as `<-` , `+`, `-`, `*`, `/`, `%*%` .
+
+Badly formatted code:
+```{r}
+a<-1
+b<-3
+c<-(a+b)/(a*5)+b/(a-2)-6/b
+```
+ 
+Niceley formatted:
+```{r}
+a <- 1
+b <- 3
+c <- (a + b) / (a * 5) + b / (a - 2) - 6 / b
+```
+
+2. Put a space after a comma and never before.
+
+3. Avoid very long lines, in R you can split long commands in different lines,
+
+```{r}
+f_lot_args <- function(a, b, c, d, e, f, g, h, i, l){
+  return(f)
+}
+
+f_lot_args( a = 1, b = c(1,2,3,4,5), c = "IamAstring",
+           d = 3, e = 1212413513514143135 , 
+           f = list( A = c(1, 2, 3), B = c(1, 2, 3)),
+           g = 1, h = 2, i = 3,
+           l = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) )
+```
+
+3. Avoid very long *script* files, that is just long list of R commands. 
+   Split your code in small functions and different file, you can then 
+   `source` the needed functions' files. 
+   
+Visit Hadley Wickham's [style guide](http://adv-r.had.co.nz/Style.html) or 
+[Google's R style guide](https://google.github.io/styleguide/Rguide.xml). 
+   
+### Formatting code in Rstudio
+
+In Rstudio you can reformat your code form the **Code** menu or using the 
+`Ctr + Shift + A` shortcut, it will usually do a nice job. 

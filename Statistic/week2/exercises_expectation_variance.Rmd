@@ -1,0 +1,238 @@
+---
+title: "expectation and variance"
+author: ""
+date: ''
+output:
+  html_notebook:
+    code_folding: none
+    toc: yes
+    toc_float:
+      collapsed: no
+    df_print: paged
+    theme: sandstone
+    highlight: kate
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+    df_print: paged
+---
+<style>
+.exercise{background-color:#c9e2a5;padding:1ex 1ex .1ex 1ex;}
+.answer{background-color:#f3f3a5;padding:1ex 1ex .1ex 1ex;}
+</style>
+::: exercise :::
+[This is how exercises are highlighted]
+:::
+::: answer  :::
+[This is how your answers are highlighted]
+:::
+
+
+
+
+## Numerical integration 
+
+To perform numerical integration of a one-dimensional function,
+we can use the  `integrate` function.
+
+For example, we can compute $\int_{2}^5 x^2 + \cos(x) dx$ as follows
+``` {r}
+f <- function(x) {
+   return(x ^ 2 + cos(x))
+}
+integrate(f, lower = 2, upper = 5)
+```
+
+The function `integrate` accepts the following parameters:
+
+- `f` the function to integrate, must accept a numerical vector and return a
+   numerical vector of the same length;
+- `lower` and `upper` are the lower and upper limits of integration, respectively,
+they can be `-Inf` or `Inf`
+- there are further optional parameters, cf. `?integrate`
+
+It is a requirement that the function `f` 
+accepts a numerical vector and returns a numerical vector of the same length.
+For example, the following fails
+``` {r error=T}
+f <- function() {
+   return(1)
+}
+integrate(f, lower  = 0, upper = 1)
+```
+
+::: exercise ::: 
+@. Describe the problem in above code chunk.
+:::
+
+
+::: answer :::
+
+:::
+
+
+Also, the following fails
+because the function `f` does not return a vector
+``` {r error=T}
+f <- function(x) {
+   return(1)
+}
+integrate(f, lower  = 0, upper = 1)
+```
+To make the example work, we can change the example as follows
+``` {r}
+f <- function(x) {
+   return(rep(1, length(x)))
+}
+integrate(f, lower  = 0, upper = 1)
+```
+
+Instead, we could have used the function `Vectorize`
+to _vectorize_ the original function definition;
+for example
+``` {r}
+g <- function(x) {
+   return(1)
+}
+
+g_vect <- Vectorize(g)
+
+integrate(g_vect, lower = 0, upper = 1)
+```
+
+::: exercise :::
+@. Compute $\int_{-\pi}^{\pi} cos(x)sin(x)\,dx$ 
+@. Compute $\int_{0}^{10} \min\{x, 4\}\, dx$
+@. Numerically verify that the functions `dnorm`, `dgamma`, and `dexp`
+   are probability density functions, that is,
+   that they integrate to 1 and are non-negative.
+   Do this for different settings of the parameters.
+@. Define a new probability density function `dsin`
+   of a random variable $X$ such that
+   $f_X(x) \propto \sin(x)$ for $x \in (0,\pi)$ and $0$ otherwise.
+   Visually inspect, that the function is non-negative
+   and compute the normalization constant using `integrate`.
+:::
+
+::: answer :::
+
+:::
+
+## Expectations of random variables
+
+We can use numerical integration to compute the expected value of 
+random variables and of functions of random variables
+(using the _rule of the lazy statistician_).
+
+For example, we can obtain the expected value of  $X^2 + \sin(X)$
+where $X \sim N(3,.5^2)$
+as follows
+``` {r}
+m = 3
+s = 0.5
+xf <- function(x) {
+   return((x ^ 2 + sin(x)) * dnorm(x, mean = m, sd = s))
+}
+integrate(xf, lower = -Inf, upper = Inf)
+```
+
+## Variance
+
+We can obtain the variance of a random variable using the
+formula
+$$ \mathbb{V}(X) = \mathbb{E}(X^2) - \mathbb{E}(X)^2$$
+
+We can, for example, obtain the variance of a Gaussian random variable 
+$X \sim N(3, 4^2)$ as
+``` {r}
+f <- function(x) {
+   return(dnorm(x, mean = 3, sd = 4))
+}
+xf <- function(x) {
+   return(x * f(x))
+}
+xxf <- function(x) {
+   return(x ^ 2 * f(x))
+}
+var_x <- integrate(xxf, lower = -Inf, upper = Inf)$value -
+   integrate(xf, lower = -Inf, upper = Inf)$value ^ 2
+var_x 
+```
+
+::: exercise ::: 
+@. Write a generic function that takes as input the density function and returns 
+the variance. 
+@. Obtain the variance of $Y= \sin(X)$ where $X \sim Beta(\mathrm{shape1} = 5,\ \mathrm{shape2} = 4)$.
+:::
+
+::: answer :::
+
+:::
+
+## Empirical mean 
+
+To compute the empirical mean $\bar{x} = \frac{\sum_{i=1}^n x_i}{n}$ we use
+the `mean` function. It computes the arithmetic mean of a vector.
+``` {r}
+x_obs <- runif(100, min = 0, max = 10)
+mean(x_obs)
+```
+
+We can also exclude `NA` values with the `na.rm = TRUE` argument,
+``` {r}
+obs <- c(13, 0.5, NA, 34, 9, NA)
+mean(obs, na.rm = TRUE)
+```
+
+::: exercise :::
+@. Visually compare the empirical mean and the true mean of a Gaussian random
+variable for different values of the variance parameter and for an increasing 
+number of observations (e.g. $n = 10,100,1000, 5000, 10000$).
+@. Sample $n=100$ i.i.d. observations from an exponential distribution with 
+ $\lambda = 1$ (rate) and compute the empirical mean. Repeat the experiment 100
+ times and record the 100 computed empirical means. 
+:::
+
+::: answer :::
+
+:::
+
+## Empirical variance and standard deviation
+
+The empirical variance $s^2 = \sum_{i=1}^n (\bar{x} - x_i)^2 / (n-1)$ can be 
+obtained using the `var` function that takes as input a vector of 
+observations.
+``` {r}
+sample <- rnorm(100)
+var(sample)
+```
+
+As for the `mean` function, we can exclude `NA` values,
+``` {r}
+var(c(3, 2, 12, 4, NA, 54), na.rm = TRUE)
+```
+
+::: exercise :::
+@. Sample $100$ observations from a normal random variable $X$ and compute its 
+empirical variance, then compute the transformed data under the 
+scale-location transformation $Y = 2X + 1$ and obtain the empirical 
+variance of $Y$. 
+@. Normalize the observations obtained in the previous exercise.
+Verify that the empirical mean of the normalized data is $0$ and
+the empirical variance of the normalized data is $1$.
+@. Create a `data.frame` of $100$ observations of $100$ Gaussian random variables 
+   $X_i$  
+   with means $\mu = 1$ and unit variance. 
+   For every variable $X_i$ obtain the empirical mean $\bar{X}_i$ 
+   and the empirical variance.
+   Then, for every empirical mean $\bar{X}_i$ 
+   calculate the standard error of the mean.
+   Compare the standard errors of the mean with 
+   the empirical standard deviation of the $100$ 
+   empirical means $\bar{X}_1, \bar{X}_2, \ldots, \bar{X}_{100}$. 
+:::
+
+::: answer :::
+
+:::

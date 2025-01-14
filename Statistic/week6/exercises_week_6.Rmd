@@ -1,0 +1,292 @@
+---
+title: 'StatBI/E Exercises: Week 6'
+output:
+  html_notebook:
+    code_folding: none
+    toc: yes
+    toc_float:
+      collapsed: no
+    df_print: paged
+    theme: sandstone
+    highlight: kate
+  html_document:
+    toc: yes
+    df_print: paged
+  pdf_document:
+    toc: yes
+---
+<style>
+.exercise{background-color:#c9e2a5;padding:1ex 1ex .1ex 1ex;}
+.answer{background-color:#f3f3a5;padding:1ex 1ex .1ex 1ex;}
+</style>
+::: exercise :::
+[This is how exercises are highlighted]
+:::
+::: answer :::
+
+:::
+</small>
+
+# Exercise 1: Beer foam
+
+In this problem we analyze the `beerfoam` data in the `week6.RData` file, 
+which you can load via
+``` {r}
+load("week6.RData")
+# the variable beerfoam then holds the data
+head(beerfoam)
+```
+The data set contains 13 observations of measurements of wet foam
+height and beer height at various time
+points for Shiner Bock at 20C.
+There are three variables:
+
+* t: the time from pour (in seconds)
+* foam: the wet foam height (cm)
+* beer: the beer height (cm)
+
+We want to estimate how the height of the foam decreases over time.
+
+
+
+## Exercise 1.1
+
+::: exercise :::
+Fit the simple linear regression
+$$\mathbb{E}(\text{foam}|t) = β_0 + β_1 t$$
+Plot the observations $(t, \text{foam})$ and the linear regression obtained.
+Do you think the model is appropriate?
+(Hint: plot t versus the residuals)
+:::
+
+::: answer :::
+
+:::
+
+
+
+## Exercise 1.2
+
+::: exercise :::
+Fit a quadratic regression
+$$\mathbb{E}(\text{foam}|t) = β_0 + β_1t + β_2 t^2$$
+Plot the observed points and the fitted quadratic regression, what you can
+observe?
+Does the model appear to fit the data better than the simple linear regression above?
+
+Perform the F-test and the model selection using AIC and BIC between the simple linear
+regression (Ex. 2.1) and the quadratic regression (Ex. 2.2).
+What does the quadratic model predict as $t$ increases (e.g. $t = 600$
+seconds)?
+Does the prediction of the model make sense?
+Explain and comment
+(remember the physical experiment we are analyzing).
+:::
+
+::: answer :::
+
+:::
+
+
+
+## Exercise 1.3
+
+::: exercise :::
+Fit the simple linear regression for $\log(\text{foam})$, this can
+be done since foam is always a positive variable:
+$$
+\mathbb{E}(\log(\text{foam})|t) = β_0 + β_1t$$
+(this is a simple linear regression over a transformed variable, it is not a
+generalized linear regression).
+
+Plot the regression function on top of the observed points and perform model
+selection using AIC and BIC for all three models obtained in Ex 1.1–1.3 models (SL, Q and E). 
+:::
+
+::: answer :::
+
+:::
+
+
+
+## Exercise 1.4
+
+::: exercise :::
+We wish to investigate the relationship between foam and
+beer; that is, the relationship between the height of the foam and the height of
+the beer.
+Try to fit at least $3$ different types of linear regression (and generalized linear
+regression models) and comment on the results, you can use AIC and BIC to
+preform model selection. 
+(Hint: plot the observations first and try to guess possible models)
+
+:::
+
+::: answer :::
+
+:::
+
+
+
+# Exercise 2: Tooth Growth
+
+In this problem we analyze the `ToothGrowth` data in the `week6.RData` file, 
+which you can load via
+``` {r}
+load("week6.RData")
+# the variable ToothGrowth then holds the data
+head(ToothGrowth)
+```
+
+The data is used to examine the effect of
+vitamin C on tooth growth in Guinea pigs.
+The length of odontoblasts (cells responsible for
+tooth growth) were recorded in 60 Guinea pigs. Each animal received one of
+three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery
+methods: orange juice (OJ) and ascorbic acid (VC). The data frame contains
+three columns:
+
+* len: tooth length
+* supp: supplement type (VC or OJ)
+* dose: dose level
+
+
+
+## Exercise 2.1
+
+::: exercise :::
+Compute the mean tooth length for all six combinations of
+supplement types and levels. Also provide the standard error of the mean for
+each situation.
+:::
+
+::: answer :::
+
+:::
+
+
+
+## Exercise 2.2
+
+::: exercise :::
+We will investigate whether different dose levels have the same
+effect. Perform 0.05-level two sample t-tests with (unknown) unequal variances to check
+whether to reject the following null hypotheses, and explain the result for each
+hypothesis:
+
+* With the OJ method, the dose levels 0.5 and 1.0 mg/day come with the same
+resulting tooth length.
+* With the OJ method, the dose levels 1.0 and 2.0 mg/day come with the same
+resulting tooth length.
+* With the VC method, the dose levels 0.5 and 1.0 mg/day come with the same
+resulting tooth length.
+* With the VC method, the dose levels 1.0 and 2.0 mg/day come with the same
+resulting tooth length.
+:::
+
+::: answer :::
+
+:::
+
+
+## Exercise 2.3
+
+::: exercise :::
+
+We are interested in whether OJ is more effective than VC.
+Perform 0.05-level two sample t-tests with (unknown) unequal variances to check whether
+to reject the following null hypotheses:
+
+* With 0.5 mg/day dose level, OJ is less effective than or as effective as VC
+in tooth growth.
+* With 1.0 mg/day dose level, OJ is less effective than or as effective as VC
+in tooth growth.
+* With 2.0 mg/day dose level, OJ is less effective than or as effective as VC
+in tooth growth.
+
+Under which dose level(s) can we say OJ is more effective than VC?
+
+:::
+
+::: answer :::
+
+:::
+
+
+
+# Optional Bonus Exercise 3: A case study of neuronal data (continuation of Week 5, Exercise 1)
+
+In this problem we analyze the `isi` data in the `week6.RData` file, 
+which you can load via
+``` {r}
+load("week6.RData")
+# the variable isi then holds the data
+head(isi)
+```
+
+As part of previous exercises we have described and analysed the data.
+Here, we perform Bayesian inference on the rate parameter of the exponential distribution.
+
+For this, we assume the `isi` observations are
+i.i.d. observations from an exponential distribution
+with unkown rate parameter $\lambda > 0$.
+
+As prior distribution we assume a Gamma distribution over $\lambda$, that is,
+$\lambda \sim \operatorname{Gamma}(1, 1)$
+where $\operatorname{Gamma}(\alpha,\beta)$ is
+the Gamma distribution with shape parameter $\alpha$
+and rate parameter $\beta$.
+
+
+
+## Exercise 3.1
+
+::: exercise :::
+Implement the unnormalized log-posterior density and
+obtain the MAP estimator for $\lambda$
+using numerical optimization and the function `optimize`.
+:::
+
+::: answer :::
+
+:::
+
+
+
+## Exercise 3.2
+
+::: exercise :::
+The Gamma distribution is a conjugate prior of the exponential model and
+thus closed form expression for the posterior is known, in particular if
+$\lambda\sim \operatorname{Gamma}(\alpha, \beta)$
+and
+$X_i \sim \operatorname{Exponential}(\lambda)$
+then the posterior distribution of $\lambda$ is
+once again a Gamma distribution with parameters
+
+$$\text{shape} = \alpha + n$$
+and
+$$\text{rate} = \beta + \sum_{i=1}^n X_i$$
+
+Implement the closed form expression of the
+posterior mean estimation for $\lambda$
+and compare it to the MAP estimation from above.
+
+Hint:
+If $X \sim \operatorname{Gamma}(\alpha, \gamma)$
+then
+$\mathbb{E}(X) = \frac{\alpha}{\beta}$
+and
+$\mathbb{V}(X) = \frac{\alpha}{\beta^2}$.
+It may also be helpful
+to plot the density of the Gamma distribution for the different choices of the
+parameters.
+:::
+
+
+::: answer :::
+
+:::
+
+
+\

@@ -1,0 +1,565 @@
+---
+title: 'StatBI/E Exercises: Week 5'
+output:
+  html_notebook:
+    code_folding: none
+    toc: yes
+    toc_float:
+      collapsed: no
+    df_print: paged
+    theme: sandstone
+    highlight: kate
+  html_document:
+    toc: yes
+    df_print: paged
+  pdf_document:
+    toc: yes
+---
+<style>
+.exercise{background-color:#c9e2a5;padding:1ex 1ex .1ex 1ex;}
+.answer{background-color:#f3f3a5;padding:1ex 1ex .1ex 1ex;}
+</style>
+::: exercise :::
+[This is how exercises are highlighted]
+:::
+::: answer :::
+
+:::
+</small>
+
+
+
+
+# Exercise 1: A case study of neuronal data (continuation of Week 3, Exercise 2)
+
+We load the data as follows:
+``` {r}
+isidata <- read.table("neuronspikes.txt", col.names = "isi")
+# here we have the vector of observations
+isi <- isidata$isi
+```
+
+## Exercise 1.1
+::: exercise :::
+The exponential distribution is a special
+case of the gamma distribution with
+shape parameter $1$.
+Illustrate this graphically
+for a few exponential distributions with different rate parameters.
+:::
+
+::: answer :::
+
+:::
+
+
+## Exercise 1.2
+
+The exponential model is nested in the gamma model.
+Thus, we can use the likelihood ratio test
+to select between the two models.
+
+::: exercise :::
+Perform the likelihood ratio test 
+to decide between the exponential and the gamma model
+for the `neuronspikes.txt` data.
+:::
+
+::: answer :::
+
+:::
+
+
+
+## Exercise 1.3
+
+We now consider four candidate models
+for the ISI data: 
+exponential, gamma, inverse Gaussian, and log-normal. 
+
+
+::: exercise :::
+Find the MLE for the parameters of each model.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 1.4
+
+::: exercise :::
+a) Perform model selection among the four models using the AIC.
+
+b) Perform model selection among the four models using the BIC.
+:::
+
+::: answer :::
+
+:::
+
+
+## Exercise 1.5
+
+As the name suggests,
+the log-normal distribution is related to the Gaussian distribution. 
+In particular, if $X$ is log-normally distributed
+with parameters $μ$ and $σ$,
+then $\log(X)$ is 
+normally distributed with mean $μ$ 
+and standard deviation $σ$.
+
+::: exercise :::
+To test the above statement empirically,
+transform the observations using the logarithm
+and obtain the MLE of the parameters for a Gaussian
+distribution for this transformed data.
+Verify whether the obtained MLE coincides
+with the ones obtained in Exercise 1.3.
+:::
+
+::: answer :::
+
+:::
+
+
+
+
+
+# Exercise 2: Linear regression
+
+In this exercise we will examine the behaviour
+of the simple linear regression model
+for simulated data.
+
+## Exercise 2.1 
+
+::: exercise :::
+Generate $n=50$ observations
+from the following model
+\[ X \sim N(0, \sigma_1^2)  \]
+\[ Y|X = x \sim N(a x + b, \sigma_2^2)\]
+for your choice of $a,b,\sigma_1^2$, and $\sigma_2^2$.
+Plot the observations as a scatter plot
+together with the true regression line in green.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 2.2 
+
+::: exercise :::
+Fit a linear regression model using the `lm` function.
+Plot the fitted regression line in blue
+and on top of the plot
+obtained in Exercise 2.1.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 2.3
+
+::: exercise :::
+Use the function `summary` to obtain information
+about the coefficients of the model.
+:::
+
+::: answer :::
+
+:::
+
+
+
+## Exercise 2.4 
+
+::: exercise :::
+Repeat Exercises 2.1–2.3
+setting $b = 2$ in the data generating model.
+Can you reject the null hypothesis of an
+intercept of zero at a level of $\alpha = 0.05$?
+
+Change the values of $\sigma_1^2,\sigma_2^2$
+and generate new data for which you
+can or cannot reject the null hypothesis of a zero intercept
+if previously you
+could or could not reject the null hypothesis
+("make the test flip").
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 2.5 
+
+::: exercise :::
+Fit a regression model without intercept –
+consult `?formula` to find out how to exclude
+the intercept from the model.
+
+Compute AIC and BIC for the model
+with and without intercept and perform
+the F-test comparing the two models.
+:::
+
+::: answer :::
+
+:::
+
+
+
+# Exercise 3: Polynomial regression
+
+Here we consider polynomial regression models.
+
+## Exercise 3.1 
+
+::: exercise :::
+Generate $n=50$ observations from the following model
+\[ X \sim N(0, 1)  \]
+\[ Y|X = x \sim N(x^2 - x + 1, 2)\]
+Generate a scatter plot of the observations
+and superimpose the true regression function.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 3.2 
+
+::: exercise :::
+Fit a simple linear regression model
+$\mathbb{E}(Y|X=x) = \beta_0 + \beta_1 x$
+to the data from Exercise 3.1.
+Plot the fitted line on top of the scatter plot from Exercise 3.1.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 3.3
+
+::: exercise :::
+Plot the predictor variable vs the residuals and
+also the Q-Q plot of the residuals vs normal quantiles
+(`qqnorm` and `qqline` function).
+Comment on the resulting plots.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 3.4 
+
+::: exercise :::
+Fit a degree 2 polynomial model
+–
+this is still a model that is linear in the parameters
+and you may thus use the function `lm`.
+Plot the resulting estimated regression function
+into the same plot from above and add a legend.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 3.5 
+
+::: exercise :::
+Repeat Exercise 3.3 for the polynomial regression model
+from Exercise 3.4.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 3.6 
+
+::: exercise :::
+Perform model selection between the
+simple linear regression in Exercise 3.2
+and the polynomial regression in Exercise 3.4.
+Use the F-test
+(can be implemented using `anova`)
+and also the AIC and BIC scores
+to compare the two models.
+Comment on the results.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 3.7 
+
+::: exercise :::
+Fit polynomial regression models of higher degrees
+and perform model selection.
+Plot the BIC (or AIC) and the log-likelihood
+as a function of the polynomial degree.
+Comment on the resulting plots
+with a focus on the characteristics that differ between
+the BIC and log-likelihood plot.
+:::
+
+::: answer :::
+
+:::
+
+
+
+
+# Exercise 4: Non-linear regression (W6)
+
+## Exercise 4.1 
+
+::: exercise :::
+Generate $n=50$ observations from the following model
+\[ X \sim N(0, 1/4)  \]
+\[ Y|X = x \sim N(e^{-3x} + 2x, 2)\]
+Generate a scatter plot of the observations
+and superimpose the true regression function.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 4.2 
+
+::: exercise :::
+Fit a simple linear regression model
+and polynomial regression models with degrees $2, 3, 4$, and $5$.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 4.3 
+
+::: exercise :::
+Perform model selection between the models
+fit in Exercise 4.2 using BIC (or AIC).
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 4.4 
+
+::: exercise :::
+For the model selected in exercise 4.3,
+plot the predictor variable vs the residuals
+and the Q-Q plot of the residuals vs the normal quantiles.
+Comment on the resulting plots.
+:::
+
+::: answer :::
+
+:::
+
+
+## Exercise 4.5 
+
+::: exercise :::
+Fit the "correct" model
+$\mathbb{E}(Y|X=x) = \beta_0 + \beta_1 x + \exp(\beta_2 x)$
+with Gaussian noise.
+To do so,
+manually implement the residual sum of squares as a function of
+$\beta_0, \beta_1, \beta_2$
+and minimize it using `optim`.
+Also implement the log-likelihood function
+and maximise it using `optim`.
+
+Compare the obtained parameter estimates with
+the coefficients obtained by `nls` with
+the appropriate `formula` argument.
+:::
+
+::: answer :::
+
+:::
+
+
+
+# Exercise 5: Classifying good versus bad wine (W6)
+
+Let's study the
+[wine quality data set](https://archive.ics.uci.edu/ml/data sets/Wine+Quality),
+which offers two data sets with details about 
+red and white Portuguese "Vinho Verde" wine
+and their quality rating.
+
+The file `winequality-red.csv` (also on Absalon)
+can be loaded via
+``` {r}
+wines <- read.csv("winequality-red.csv", sep =";")
+```
+
+In this exercise,
+we only consider the red wines and
+transform the quality variable
+to a binary variable
+indicating whether a wine is good or bad.
+
+``` {r}
+# make the quality column a good/bad factor column
+good <- wines$quality > 5
+wines$quality <- "bad"
+wines[good, "quality"] <- "good"
+wines[,"quality"] <- as.factor(wines[, "quality"])
+```
+
+## Exercise 5.1 
+
+::: exercise :::
+Fit a logistic regression model
+with quality as response variable
+and all remaining variables as predictor variables.
+:::
+
+::: answer :::
+
+:::
+
+
+## Exercise 5.2 
+
+::: exercise :::
+Implement a forward feature selection
+based on the BIC (or AIC) score.
+That is,
+starting from a model with only an intercept,
+iteratively add variables to the models
+where at each step the variable is added
+that increases the BIC the most.
+
+Hint: The function `update` may come in handy.
+
+Compare to forward feature selection based on the log-likelihood.
+Careful: While models with lower BIC (or AIC) are preferred,
+we prefer models with higher log-likelihood.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 5.3 
+
+::: exercise :::
+Discuss, with reference to the results obtained
+in Exercise 5.2,
+why one should not use the log-likelihood alone
+for model selection.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 5.4 
+
+::: exercise :::
+Inspect the output of `predict(model)`
+where `model` is one of the logistic regression
+models obtained above with `glm`.
+The output is not the good / bad quality coding of the wines
+– any idea what it is and how you can transform 
+into the good / bad quality coding?
+
+Write a function that transformd the output of `predict`
+into the class labels good / bad.
+
+Hint: Use the `binomial()$linkinv` call to obtain information
+on the (inverse) link function.
+:::
+
+::: answer :::
+
+:::
+
+
+## Exercise 5.5 
+
+::: exercise :::
+Compute the model accuracy over the data set,
+that is, the proportion of correctly classified observations.
+:::
+
+::: answer :::
+
+:::
+
+
+
+# Optional Bonus Exercise 6: CORIS data
+
+Here we consider the CORIS data set (cf. "All of Statistics"):
+
+> The Coronary Risk-Factor Study (CORIS) data involve 462 malesbetween the ages of 15 and 64 from three rural areas in South Africa,(Rousseauwet al.  (1983)).  The outcome Y is the presence (Y = 1) orabsence (Y = 0) of coronary heart disease.  There are 9 covariates:systolic  blood  pressure,  cumulative  tobacco  (kg),  ldl  (low  densitylipoprotein cholesterol), adiposity, famhist (family history of heartdisease), typea (type-A behavior), obesity, alcohol (current alcoholconsumption), and age.
+
+You can obtain the `coris.dat` file from Absalon
+and load the data as follows:
+``` {r}
+coris <- read.table(
+  "coris.dat",
+  skip = 4,
+  sep = ",",
+  col.names = c(
+    "row.names",
+    "sbp",
+    "tobacco",
+    "ldl",
+    "adiposity",
+    "famhist",
+    "typea",
+    "obesity",
+    "alcohol",
+    "age",
+    "chd"
+  )
+)[, -1]
+```
+
+
+## Exercise 6.1
+
+::: exercise :::
+Use backward stepwise selection for logistic regression
+for the outcome $Y$ coding presence/absence of coronary heart disease.
+Use the AIC as score and discuss your results.
+Hint: `?step`.
+:::
+
+::: answer :::
+
+:::
+
+
+## Exercise 6.2
+
+::: exercise :::
+Fit the logistic regression model with all predictor variables included.
+What do you notice, when you inspect the model coefficients?
+Which predictor variables appear as surprisingly (un)important indicator of coronary heart disease?
+Comment on the results.
+:::
+
+::: answer :::
+
+:::
+
+.

@@ -1,0 +1,93 @@
+# 计算每种组合的死亡概率
+prob_death <- aggregate(dead ~ dose + treatment, data = radiation, FUN = mean)
+
+# 绘制概率图
+library(ggplot2)
+
+ggplot(prob_death, aes(x = dose, y = dead, color = factor(treatment))) +
+  geom_line() +
+  geom_point() +
+  scale_color_manual(values = c("red", "blue"),
+                     labels = c("Saline control", "Streptomycin"),
+                     name = "Treatment") +
+  labs(x = "Neutron Dose", 
+       y = "Estimated Probability of Death",
+       title = "Estimated Death Probability vs Neutron Dose") +
+  theme_minimal() 
+
+# 定义剂量水平
+doses <- unique(radiation$dose)
+
+# 对每个剂量进行卡方检验
+for(d in doses) {
+  cont_table <- table(radiation[radiation$dose == d, c("treatment", "dead")])
+  chi_test <- chisq.test(cont_table)
+  cat(sprintf("\n剂量 %d 的检验结果:\n", d))
+  print(chi_test)
+} 
+
+# 实现Wald检验的函数
+wald_test <- function(dose_level, data) {
+  # 获取该剂量下的数据
+  dose_data <- data[data$dose == dose_level,]
+  
+  # 计算两组的死亡概率
+  p1 <- mean(dose_data$dead[dose_data$treatment == 1])
+  p0 <- mean(dose_data$dead[dose_data$treatment == 0])
+  
+  # 计算样本量
+  n1 <- sum(dose_data$treatment == 1)
+  n0 <- sum(dose_data$treatment == 0)
+  
+  # 计算标准误
+  se <- sqrt((p1*(1-p1)/n1) + (p0*(1-p0)/n0))
+  
+  # 计算检验统计量
+  delta <- p1 - p0
+  z_stat <- delta/se
+  
+  # 计算p值(单侧检验)
+  p_value <- pnorm(z_stat)
+  
+  return(list(delta = delta, p_value = p_value))
+}
+
+# 对每个剂量水平进行检验
+for(d in doses) {
+  result <- wald_test(d, radiation)
+  cat(sprintf("\n剂量 %d:\n", d))
+  cat(sprintf("delta = %.4f, p-value = %.4f\n", result$delta, result$p_value))
+} 
+
+# 只使用链霉素治疗组的数据
+strep_data <- radiation[radiation$treatment == 1,]
+
+# 拟合三个模型
+model1 <- glm(dead ~ dose, data = strep_data, family = binomial)
+model2 <- glm(dead ~ dose + I(dose^2), data = strep_data, family = binomial)
+model3 <- glm(dead ~ dose + I(dose^2) + I(dose^3), data = strep_data, family = binomial)
+
+# 打印系数
+summary(model1)$coefficients
+summary(model2)$coefficients
+summary(model3)$coefficients
+
+# AIC比较
+AIC(model1, model2, model3)
+
+# 似然比检验
+anova(model1, model2, test = "Chisq")
+
+# 绘制预测概率
+new_data <- data.frame(dose = seq(min(strep_data$dose), max(strep_data$dose), length.out = 100))
+pred1 <- predict(model1, newdata = new_data, type = "response")
+
+ggplot() +
+  geom_line(data = data.frame(dose = new_data$dose, prob = pred1), 
+            aes(x = dose, y = prob), color = "blue") +
+  geom_point(data = prob_death[prob_death$treatment == 1,], 
+             aes(x = dose, y = dead), color = "red") +
+  labs(x = "Neutron Dose", 
+       y = "Probability of Death",
+       title = "Observed vs Predicted Death Probability (Streptomycin Group)") +
+  theme_minimal() 

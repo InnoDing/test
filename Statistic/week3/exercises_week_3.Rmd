@@ -1,0 +1,259 @@
+---
+title: 'StatBI/E Exercises: Week 3'
+output:
+  html_notebook:
+    code_folding: none
+    toc: true
+    toc_float:
+      collapsed: false
+    df_print: paged
+    theme: sandstone
+    highlight: kate
+  html_document:
+    toc: true
+    df_print: paged
+  pdf_document:
+    toc: true
+---
+<style>
+.exercise{background-color:#c9e2a5;padding:1ex 1ex .1ex 1ex;}
+.answer{background-color:#f3f3a5;padding:1ex 1ex .1ex 1ex;}
+</style>
+::: exercise :::
+[This is how exercises are highlighted]
+:::
+::: answer :::
+
+:::
+</small>
+
+
+
+
+# Exercise 1: A trigonometric density  (continuation of Week 2, Exercise 1)
+
+## Exercise 1.1
+
+::: exercise :::
+Load the data in the file `angles.txt`.
+:::
+
+::: answer :::
+
+:::
+
+The data has been generated as iid observations
+from a random variable with density
+$f(x|k) \propto \sin(x)^k$
+on the interval $[0, \pi]$
+(the density is $0$ outside of the interval).
+Notation: $\propto$ stands for
+_proportional to_, that is,
+$f(x|k) = C_k \sin(x)^k$,
+where $C_k$ is
+an appropriately chosen normalisation constant
+such that the density integrates to $1$.
+
+## Exercise 1.2
+
+::: exercise :::
+Is the model parametric?
+If so, what are the parameters?
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 1.3
+
+::: exercise :::
+Derive the analytical expression
+of the negative log-likelihood function
+of the model and implement it as an R function.
+
+Hint: You may refer to the sample solutions
+of last week's exercise sheet to find `dsin`.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 1.4
+
+::: exercise :::
+Use numerical optimization
+to find the maximum likelihood estimate
+$\hat{k}_\text{MLE}$
+given the data in `angles.txt`.
+
+Hint: `?optimize`, `?optim`.
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 1.5
+
+::: exercise :::
+Plot the histogram of the data
+and superimpose the density
+$f(x|\hat{k}_\text{MLE})$.
+:::
+
+::: answer :::
+
+:::
+
+
+
+
+
+# Exercise 2: A case study of neuronal data (continuation of Week 2, Exercise 2)
+
+
+We load the data as follows:
+``` {r}
+isidata <- read.table("neuronspikes.txt", col.names = "isi")
+# here we have the vector of observations
+isi <- isidata$isi
+```
+
+## Exercise 2.1 
+
+::: exercise :::
+Assume the ISI observations are i.i.d.
+following an exponential distribution with parameter $\lambda$.
+Compute the maximum likelihood estimate
+$\hat{\lambda}_\text{MLE}$ of $\lambda$. 
+:::
+
+::: answer :::
+
+:::
+
+## Exercise 2.2 
+
+::: exercise :::
+Assume that the ISI observations are i.i.d. 
+following a gamma distribution
+with parameters $\alpha$ (`shape`)
+and $\beta$ (`rate`),
+find the MLE estimates of the parameters
+$\alpha$ and $\beta$. 
+:::
+
+
+::: answer :::
+
+:::
+
+
+## Exercise 2.3 
+
+
+::: exercise :::
+For the gamma distribution,
+we know the formulas for the expecation
+and the variance:
+\begin{aligned}
+\mathbb{E}(X) &= \frac{\alpha}{\beta} \\
+\mathbb{V}(X) &= \frac{\alpha}{\beta^2}
+\end{aligned}
+Try to find the method of moments estimator of $\alpha$ and $\beta$. 
+The method of moments can be used to 
+find a better value to initialize the
+iterative MLE optimization procedure above.
+:::
+
+
+::: answer :::
+
+:::
+
+
+# Optional Bonus Exercise 2+
+
+In addition to the exponential and the gamma distribution,
+the __inverse  Gaussian distribution__
+is another widely used model
+for inter-events intervals.
+It describes the first-passage time of a one-dimensional Brownian motion subject
+to a fixed threshold value. 
+The probability density function is given by
+\[ f(x|\mu, \lambda) = \left( \frac{\lambda}{2\pi x^3} \right)^{1/2} 
+\exp\left( \frac{-\lambda(x-\mu)^2}{2\mu^2x} \right)\]
+
+## Exercise 2+.1
+
+::: exercise :::
+Devise the analytic formula for the
+log-likelihood given $n$ i.i.d. observations.
+:::
+
+
+::: answer :::
+
+:::
+
+
+
+## Exercise 2+.2
+
+::: exercise :::
+Try to derive the formula for the maximum likelihood estimators
+for $\mu$ and $\lambda$.
+:::
+
+
+
+::: answer :::
+
+:::
+
+
+## Exercise 2+.3 
+
+::: exercise :::
+Apply the MLE estimators in the previous step to the experimental
+ISI data, 
+that is,
+calculate the estimates
+of $\mu$ and $\lambda$ for the ISI data. 
+:::
+
+::: answer :::
+
+:::
+
+
+## Exercise 2+.4 
+
+::: exercise :::
+Find the maximum likelihood estimators using numerical methods. 
+
+You may also use the method of moments estimators of the parameters
+as initial points for the numerical optimization. 
+:::
+
+
+::: answer :::
+
+:::
+
+## Exercise 2+.5
+
+::: exercise :::
+Plot the 
+estimated inverse Gaussian density
+on top of the
+histogram of the ISI data.
+:::
+
+
+
+::: answer :::
+
+:::
